@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: lightblue;
+}
+
+h1 {
+  text-align: center;
+}
+
+#grid {
+  width: 400px;
+  margin: 0 auto;
+}
+
+.row {
+  height 100px;
+  width: 1005%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.cell {
+  height: 90px;
+  width: 90px;
+  margin: 5px;
+  float: left;
+  border-radius: 10px;
+  box-shadow: 3px 3px 2px 2px rgba(0, 0, 0, 0.8);
+  transition: all 2.0s ease-out;
+  -webkit-transition: all 2.0s ease-out;
+  -moz-transition: all 2.0s ease-out;
+  -o-transition: all 2.0s ease-out;
+  -ms-transition: all 2.0s ease-out;
+
+
+  /* gradient from https://uigradients.com */
+  background: #16A085;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom, #F4D03F, #16A085);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #F4D03F, #16A085); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.cell.selected {
+  background: white;
+}
