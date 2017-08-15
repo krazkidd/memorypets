@@ -10,20 +10,27 @@ init();
 // initialize the game
 function init() {
   initGrid(gridCardinality);
+  $("#mem_reset").on("click", function() {
+    initGrid(gridCardinality);
+  });
 }
 
 // build the grid
 function initGrid(num) {
+  // reset grid
+  $(".mem_cell").remove();
+  console.log("reset");
+
   // get glyphs
   var glyphs = getGlyphs(num * num);
 
   for (var i = 0; i < num; i++) {
     // create row
-    var row = $("<div/>").attr("class", "row").appendTo("#grid");
+    var row = $("<div/>").attr("class", "mem_row").appendTo("#mem_grid");
 
     for (var j = 0; j < num; j++) {
-      // create cell
-      var cell = $("<div/>").attr("class", "cell").appendTo(row);
+      // create cell; fade in over short random amount of time
+      var cell = $("<div/>").hide().attr("class", "mem_cell").appendTo(row).fadeIn(Math.random() * 500);
 
       // add card face content
       $("<span/>").text(glyphs.pop()).appendTo(cell);
