@@ -1,25 +1,32 @@
 // selected DOM elements
-var selected1 = null;
-var selected2 = null;
-
-// size of grid
-var gridCardinality = 4;
+var selected1;
+var selected2;
 
 init();
 
 // initialize the game
 function init() {
-  initGrid(gridCardinality);
-  $("#mem_reset").on("click", function() {
-    initGrid(gridCardinality);
+  initGrid(Number($("select[name='mem_size']").val()));
+
+  //TODO why doesn't this work?
+  // $("select[name='mem_size']").on("change"), function() {
+  //   initGrid(Number($("select[name='mem_size']").val()));
+  // }
+
+  $("button[name='mem_reset']").on("click", function() {
+    initGrid(Number($("select[name='mem_size']").val()));
   });
 }
 
 // build the grid
 function initGrid(num) {
+  console.log("reset");
+
   // reset grid
   $(".mem_cell").remove();
-  console.log("reset");
+  $(".mem_row").remove();
+  selected1 = null;
+  selected2 = null;
 
   // get glyphs
   var glyphs = getGlyphs(num * num);
@@ -28,9 +35,16 @@ function initGrid(num) {
     // create row
     var row = $("<div/>").attr("class", "mem_row").appendTo("#mem_grid");
 
+    row.height(Math.floor($("#mem_grid").css("height") / num));
+
     for (var j = 0; j < num; j++) {
       // create cell; fade in over short random amount of time
-      var cell = $("<div/>").hide().attr("class", "mem_cell").appendTo(row).fadeIn(Math.random() * 500);
+      var cell = $("<div/>").hide().attr("class", "mem_cell").appendTo(row).fadeIn(Math.random() * 500 + 500);
+
+      var cellSize = Math.floor(Number(row.width()) / num);
+      cell.outerWidth(cellSize - 10);
+      cell.outerHeight(cellSize - 10);
+      console.log("cell size - " + cellSize + "x" + cellSize);
 
       // add card face content
       $("<span/>").text(glyphs.pop()).appendTo(cell);
@@ -95,7 +109,11 @@ function cellClickHandler(x, y) {
 // return a randomized array of glyphs to use on the card faces.
 // num must be an even number
 function getGlyphs(num) {
-  //TODO throw exception if num is not even
+  if (num % 2 != 0) {
+    throw "getGlyphs(): num parameter must be an even number.";
+  } else if (num > 26) {
+    throw "getGlyphs(): Currently, this function cannot generate more than 26 glyphs. (" + num + " requested.)";
+  }
 
   var glyphs = new Array(num);
 
