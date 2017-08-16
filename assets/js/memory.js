@@ -2,6 +2,13 @@
 var selected1;
 var selected2;
 
+// number of attempted pairings
+var turnCount;
+// number of cards
+var cardCount;
+// number of matches (at end of game, matchCount * 2 === cardCount)
+var matchCount;
+
 init();
 
 // initialize the game
@@ -22,9 +29,14 @@ function init() {
 function resetGame() {
   console.log("reset");
 
+  var selectedSize = Number($("select[name='mem_size']").val());
+
   // reset game
   selected1 = null;
-  selected2 = null
+  selected2 = null;
+  turnCount = 0;
+  cardCount = selectedSize * selectedSize;
+  matchCount = 0;
 
   // reset grid
   $("#mem_game").empty();
@@ -32,7 +44,9 @@ function resetGame() {
              .appendTo("#mem_game");
 
   // rebuild the grid with the current size selection
-  initGrid(Number($("select[name='mem_size']").val()));
+  initGrid(selectedSize);
+
+  updateGameStatus();
 }
 
 // build the grid
@@ -148,6 +162,8 @@ function cellClickHandler() {
     if ($(selected1).text() === $(selected2).text()) {
       console.log("match!")
 
+      matchCount++;
+
       $(selected1).css("visibility", "hidden");
       $(selected2).css("visibility", "hidden");
     } else {
@@ -156,5 +172,19 @@ function cellClickHandler() {
       // $(this).removeClass("selected");
       // $(this).removeClass("selected");
     }
+
+    turnCount++;
+
+    updateGameStatus();
+  }
+}
+
+function updateGameStatus() {
+  $("#mem_turncount").text("Turns: " + turnCount);
+
+  if (cardCount === matchCount * 2) {
+    $("#mem_state").text("Game over!");
+  } else {
+    $("#mem_state").text("");
   }
 }
