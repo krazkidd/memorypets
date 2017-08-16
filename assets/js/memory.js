@@ -8,10 +8,9 @@ init();
 function init() {
   initGrid(Number($("select[name='mem_size']").val()));
 
-  //TODO why doesn't this work?
-  // $("select[name='mem_size']").on("change"), function() {
-  //   initGrid(Number($("select[name='mem_size']").val()));
-  // }
+  $("select[name='mem_size']").on("change", function() {
+    initGrid(Number($("select[name='mem_size']").val()));
+  });
 
   $("button[name='mem_reset']").on("click", function() {
     initGrid(Number($("select[name='mem_size']").val()));
