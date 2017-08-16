@@ -1,4 +1,4 @@
-// selected DOM elements
+// selected cells (DOM element objects)
 var selected1;
 var selected2;
 
@@ -6,103 +6,65 @@ init();
 
 // initialize the game
 function init() {
-  initGrid(Number($("select[name='mem_size']").val()));
+  resetGame();
 
+  // dropdown handler
   $("select[name='mem_size']").on("change", function() {
-    initGrid(Number($("select[name='mem_size']").val()));
+    resetGame();
   });
 
+  // reset button handler
   $("button[name='mem_reset']").on("click", function() {
-    initGrid(Number($("select[name='mem_size']").val()));
+    resetGame();
   });
+}
+
+function resetGame() {
+  console.log("reset");
+
+  // reset game
+  selected1 = null;
+  selected2 = null
+
+  // reset grid
+  $("#mem_game").empty();
+  $("<div/>").attr("id", "mem_grid")
+             .appendTo("#mem_game");
+
+  // rebuild the grid with the current size selection
+  initGrid(Number($("select[name='mem_size']").val()));
 }
 
 // build the grid
 function initGrid(num) {
-  console.log("reset");
-
-  // reset grid
-  $(".mem_cell").remove();
-  $(".mem_row").remove();
-  selected1 = null;
-  selected2 = null;
-
   // get glyphs
   var glyphs = getGlyphs(num * num);
 
   for (var i = 0; i < num; i++) {
     // create row
-    var row = $("<div/>").attr("class", "mem_row").appendTo("#mem_grid");
-
-    row.height(Math.floor($("#mem_grid").css("height") / num));
+    var row = $("<div/>")
+              .attr("class", "mem_row")
+              .height(Math.floor($("#mem_grid").css("height") / num))
+              .appendTo("#mem_grid");
 
     for (var j = 0; j < num; j++) {
-      // create cell; fade in over short random amount of time
-      var cell = $("<div/>").hide().attr("class", "mem_cell").appendTo(row).fadeIn(Math.random() * 500 + 500);
-
       var cellSize = Math.floor(Number(row.width()) / num);
-      cell.outerWidth(cellSize - 10);
-      cell.outerHeight(cellSize - 10);
-      console.log("cell size - " + cellSize + "x" + cellSize);
+
+      // create cell; fade in over short random amount of time
+      var cell = $("<div/>")
+                 .attr("class", "mem_cell")
+                 .outerWidth(cellSize - 10)
+                 .outerHeight(cellSize - 10)
+                 .on("click", cellClickHandler)
+                 .hide()
+                 .appendTo(row)
+                 .fadeIn(Math.random() * 500 + 500);
 
       // add card face content
-      $("<span/>").text(glyphs.pop()).appendTo(cell);
-
-      // add click handler (closure)
-      cell.on("click", cellClickHandler(j, i));
+      $("<span/>").text(glyphs.pop())
+                  .appendTo(cell);
     }
   }
-}
-
-// special closure for handling cell clicks
-function cellClickHandler(x, y) {
-  return function() {
-    console.log("clicked cell - x: " + x + ", y: " + y);
-
-    // NOTE: We leave both selected cards facing player until
-    //       we can get animations to work well.
-
-    // flip previous selected
-    if (selected1 && selected2) {
-      // don't remove selected class so flickering doesn't occur
-      if (this !== selected1) {
-        $(selected1).removeClass("selected");
-      }
-      if (this !== selected2) {
-        $(selected2).removeClass("selected");
-      }
-
-      selected1 = null;
-      selected2 = null;
-    }
-
-    // set as selected if it's the first to be flipped
-    if (!selected1) {
-      console.log("first selected");
-
-      $(this).addClass("selected");
-      selected1 = this;
-    } else if (this !== selected1) {
-      console.log("second selected");
-
-      $(this).addClass("selected");
-      selected2 = this;
-
-      console.log("comparing");
-
-      if ($(selected1).text() === $(selected2).text()) {
-        console.log("match!")
-
-        $(selected1).css("visibility", "hidden");
-        $(selected2).css("visibility", "hidden");
-      } else {
-        console.log("no match!")
-
-        // $(this).removeClass("selected");
-        // $(this).removeClass("selected");
-      }
-    }
-  };
 }
 
 // return a randomized array of glyphs to use on the card faces.
@@ -148,4 +110,51 @@ function getGlyphs(num) {
   }
 
   return glyphs;
+}
+
+// implements the game logic
+function cellClickHandler() {
+  // NOTE: We leave both selected cards facing player until
+  //       we can get animations to work well.
+
+  // flip previous selected
+  if (selected1 && selected2) {
+    // don't remove selected class so flickering doesn't occur
+    if (this !== selected1) {
+      $(selected1).removeClass("selected");
+    }
+    if (this !== selected2) {
+      $(selected2).removeClass("selected");
+    }
+
+    selected1 = null;
+    selected2 = null;
+  }
+
+  // set as selected if it's the first to be flipped
+  if (!selected1) {
+    console.log("first selected");
+
+    $(this).addClass("selected");
+    selected1 = this;
+  } else if (this !== selected1) {
+    console.log("second selected");
+
+    $(this).addClass("selected");
+    selected2 = this;
+
+    console.log("comparing");
+
+    if ($(selected1).text() === $(selected2).text()) {
+      console.log("match!")
+
+      $(selected1).css("visibility", "hidden");
+      $(selected2).css("visibility", "hidden");
+    } else {
+      console.log("no match!")
+
+      // $(this).removeClass("selected");
+      // $(this).removeClass("selected");
+    }
+  }
 }
