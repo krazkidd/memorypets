@@ -20,6 +20,10 @@ h1 {
   text-align: right;
 }
 
+#mem_config p {
+  min-height: 1em;
+}
+
 #mem_game {
   width: 70%;
   float: left;
