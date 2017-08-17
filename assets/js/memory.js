@@ -1,6 +1,5 @@
-// selected cells (DOM element objects)
-var selected1;
-var selected2;
+// first selected card (DOM element object)
+var firstSelectedCard;
 
 // number of attempted pairings
 var turnCount;
@@ -11,7 +10,7 @@ var matchCount;
 
 init();
 
-// initialize the game
+// initialize the page
 function init() {
   resetGame();
 
@@ -24,6 +23,9 @@ function init() {
   $("button[name='mem_reset']").on("click", function() {
     resetGame();
   });
+
+  // game board handler
+  $("#mem_game").on("click", ".mem_cellback", cellClickHandler);
 }
 
 function resetGame() {
@@ -32,8 +34,7 @@ function resetGame() {
   var selectedSize = Number($("select[name='mem_size']").val());
 
   // reset game
-  selected1 = null;
-  selected2 = null;
+  firstSelectedCard = null;
   turnCount = 0;
   cardCount = selectedSize * selectedSize;
   matchCount = 0;
@@ -64,19 +65,29 @@ function initGrid(num) {
     for (var j = 0; j < num; j++) {
       var cellSize = Math.floor(Number(row.width()) / num);
 
-      // create cell; fade in over short random amount of time
-      var cell = $("<div/>")
-                 .attr("class", "mem_cell")
-                 .outerWidth(cellSize - 10)
-                 .outerHeight(cellSize - 10)
-                 .on("click", cellClickHandler)
-                 .hide()
-                 .appendTo(row)
-                 .fadeIn(Math.random() * 500 + 500);
+      // NOTE: We create two divs for each card because CSS transitions
+      //       and jQuery animations weren't working well together.
+
+      // colorfully styled backside of card
+      var cardBack = $("<div/>")
+                       .attr("class", "mem_cellback")
+                       .outerWidth(cellSize - 10)
+                       .outerHeight(cellSize - 10)
+                       .hide()
+                       .appendTo(row)
+                       .fadeIn(Math.random() * 500 + 500);
+
+      // animated frontside of card
+      var cardFace = $("<div/>")
+                          .attr("class", "mem_cellface")
+                          .outerWidth(cellSize - 10)
+                          .outerHeight(cellSize - 10)
+                          .hide()
+                          .appendTo(cardBack);
 
       // add card face content
       $("<span/>").text(glyphs.pop())
-                  .appendTo(cell);
+                  .appendTo(cardFace);
     }
   }
 }
@@ -127,55 +138,48 @@ function getGlyphs(num) {
 }
 
 // implements the game logic
-function cellClickHandler() {
-  // NOTE: We leave both selected cards facing player until
-  //       we can get animations to work well.
+function cellClickHandler(event) {
+  //TODO try different animations
 
-  // flip previous selected
-  if (selected1 && selected2) {
-    // don't remove selected class so flickering doesn't occur
-    if (this !== selected1) {
-      $(selected1).removeClass("selected");
-    }
-    if (this !== selected2) {
-      $(selected2).removeClass("selected");
-    }
-
-    selected1 = null;
-    selected2 = null;
-  }
+  var cellface = $(this).children(".mem_cellface").first().get();
 
   // set as selected if it's the first to be flipped
-  if (!selected1) {
-    console.log("first selected");
+  if (!firstSelectedCard) {
+    $(cellface).fadeIn();
 
-    $(this).addClass("selected");
-    selected1 = this;
-  } else if (this !== selected1) {
-    console.log("second selected");
+    firstSelectedCard = cellface;
+  } else if ( !$(cellface).is(firstSelectedCard)) {
+    $(cellface).fadeIn(fadeOutHandler($(cellface).add(firstSelectedCard)));
 
-    $(this).addClass("selected");
-    selected2 = this;
-
-    console.log("comparing");
-
-    if ($(selected1).text() === $(selected2).text()) {
-      console.log("match!")
-
+    if ($(cellface).text() === $(firstSelectedCard).text()) {
       matchCount++;
 
-      $(selected1).css("visibility", "hidden");
-      $(selected2).css("visibility", "hidden");
-    } else {
-      console.log("no match!")
+      var $toHide = $(cellface).parent();
+      $toHide = $toHide.add($(firstSelectedCard).parent().get());
 
-      // $(this).removeClass("selected");
-      // $(this).removeClass("selected");
+      $(cellface).queue(hideHandler($toHide));
     }
 
     turnCount++;
+    firstSelectedCard = null;
 
     updateGameStatus();
+  }
+}
+
+// (closure) helper to asynchronously fade out the elements in
+// the given jQuery object
+function fadeOutHandler(jObject) {
+  return function() {
+    jObject.fadeOut();
+  }
+}
+
+// (closure) helper to asynchronously hide the elements in
+// the given jQuery object
+function hideHandler(jObject) {
+  return function() {
+    jObject.css("visibility", "hidden");
   }
 }
 

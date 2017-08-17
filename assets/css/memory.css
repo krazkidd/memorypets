@@ -40,7 +40,7 @@ h1 {
   padding: 0;
 }
 
-.mem_cell {
+.mem_row div {
   height: 90px;
   width: 90px;
   max-height: 90px;
@@ -50,28 +50,15 @@ h1 {
   float: left;
   border-radius: 10px;
   box-shadow: 3px 3px 2px 2px rgba(0, 0, 0, 0.8);
-  /*transition: all 2.0s ease-out;
-  -webkit-transition: all 2.0s ease-out;
-  -moz-transition: all 2.0s ease-out;
-  -o-transition: all 2.0s ease-out;
-  -ms-transition: all 2.0s ease-out;*/
-
 
   /* gradient from https://uigradients.com */
-  /*background: #16A085;  /* fallback for old browsers */
-  /*background: -webkit-linear-gradient(to bottom, #F4D03F, #16A085);  /* Chrome 10-25, Safari 5.1-6 */
-  /*background: linear-gradient(to bottom, #F4D03F, #16A085); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background: purple;
+  background: #16A085;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom, #F4D03F, #16A085);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #F4D03F, #16A085); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
-.mem_cell span {
-  display: none;
-}
-
-.mem_cell.selected {
+.mem_row div.mem_cellface {
+  margin: 0;
+  box-shadow: none;
   background: white;
-}
-
-.mem_cell.selected span {
-  display: inline;
 }
