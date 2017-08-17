@@ -155,7 +155,7 @@ function cellClickHandler(event) {
       matchCount++;
 
       var $toHide = $(cellface).parent();
-      $toHide = $toHide.add($(firstSelectedCard).parent().get());
+      $toHide = $toHide.add($(firstSelectedCard).parent());
 
       $(cellface).queue(hideHandler($toHide));
     }
