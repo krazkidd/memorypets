@@ -1,3 +1,5 @@
+// NOTE: Sorry, no namespace.
+
 // first selected card (DOM element object)
 var firstSelectedCard;
 
