@@ -29,8 +29,6 @@ function init() {
 }
 
 function resetGame() {
-  console.log("reset");
-
   var selectedSize = Number($("select[name='mem_size']").val());
 
   // reset game
