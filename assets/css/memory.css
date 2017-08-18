@@ -66,3 +66,16 @@ h1 {
   box-shadow: none;
   background: white;
 }
+
+.mem_cellface span {
+  visibility: hidden;
+}
+
+.mem_cellface img {
+  background-position: center;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}

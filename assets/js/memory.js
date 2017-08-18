@@ -72,6 +72,7 @@ function resetGame() {
 function initGrid(num) {
   // get glyphs
   var glyphs = getGlyphs(num * num);
+  var imageList = getImageList(glyphs);
 
   for (var i = 0; i < num; i++) {
     // create row
@@ -82,6 +83,7 @@ function initGrid(num) {
 
     for (var j = 0; j < num; j++) {
       var cellSize = Math.floor(Number(row.width()) / num);
+      var glyph = glyphs.pop();
 
       // NOTE: We create two divs for each card because CSS transitions
       //       and jQuery animations weren't working well together.
@@ -98,13 +100,14 @@ function initGrid(num) {
       // animated frontside of card
       var cardFace = $("<div/>")
                           .attr("class", "mem_cellface")
+                          .css("backgroundImage", "url(" + imageList[glyph] + ")")
                           .outerWidth(cellSize - 10)
                           .outerHeight(cellSize - 10)
                           .hide()
                           .appendTo(cardBack);
 
       // add card face content
-      $("<span/>").text(glyphs.pop())
+      $("<span/>").text(glyph)
                   .appendTo(cardFace);
     }
   }
@@ -153,6 +156,24 @@ function getGlyphs(num) {
   }
 
   return glyphs;
+}
+
+function getImageList(glyphs) {
+  //TODO use AJAX to get list of images from server
+  var hardCodedList = [];
+  for (var i = 0; i < glyphs.length / 2; i++) {
+    hardCodedList.push("assets/images/game/" + i + ".png");
+  }
+
+  var images = {};
+
+  for (var i = 0; i < glyphs.length; i++) {
+    if ( !images[glyphs[i]]) {
+      images[glyphs[i]] = hardCodedList.pop();
+    }
+  }
+
+  return images;
 }
 
 // implements the game logic
