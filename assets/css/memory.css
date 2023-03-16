@@ -64,18 +64,15 @@ h1 {
 .mem_row div.mem_cellface {
   margin: 0;
   box-shadow: none;
-  background: white;
-}
-
-.mem_cellface span {
-  visibility: hidden;
-}
-
-.mem_cellface img {
+  background-origin: content-box;
   background-position: center;
   background-repeat: no-repeat;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+
+.mem_cellface span {
+  visibility: hidden;
 }

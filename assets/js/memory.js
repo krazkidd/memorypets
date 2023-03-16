@@ -162,7 +162,7 @@ function getImageList(glyphs) {
   //TODO use AJAX to get list of images from server
   var hardCodedList = [];
   for (var i = 0; i < glyphs.length / 2; i++) {
-    hardCodedList.push("assets/images/game/" + i + ".png");
+    hardCodedList.push("assets/images/game/" + i + ".jpg");
   }
 
   var images = {};
