@@ -16,10 +16,7 @@
 // along with Memory Pets.  If not, see <http://www.gnu.org/licenses/>.
 
 
-// NOTE: Sorry, no namespace.
-
-// first selected card (DOM element object)
-var firstSelectedCard;
+var $firstSelectedCard;
 
 // number of attempted pairings
 var turnCount;
@@ -28,39 +25,26 @@ var cardCount;
 // number of matches (at end of game, matchCount * 2 === cardCount)
 var matchCount;
 
-init();
+$(function () {
+  $("#mem_size,#reset").on("change", function() {
+    resetGame();
 
-// initialize the page
-function init() {
+    $(this).blur();
+  });
+
   resetGame();
-
-  // dropdown handler
-  $("select[name='mem_size']").on("change", function() {
-    resetGame();
-  });
-
-  // reset button handler
-  $("button[name='mem_reset']").on("click", function() {
-    resetGame();
-  });
-
-  // game board handler
-  $("#mem_game").on("click", ".mem_cellback", cellClickHandler);
-}
+});
 
 function resetGame() {
-  var selectedSize = Number($("select[name='mem_size']").val());
+  var selectedSize = Number($("#mem_size").val());
 
-  // reset game
-  firstSelectedCard = null;
+  $firstSelectedCard = null;
+
   turnCount = 0;
   cardCount = selectedSize * selectedSize;
   matchCount = 0;
 
-  // reset grid
-  $("#mem_game").empty();
-  $("<div/>").attr("id", "mem_grid")
-             .appendTo("#mem_game");
+  $("#game").empty();
 
   // rebuild the grid with the current size selection
   initGrid(selectedSize);
@@ -70,45 +54,43 @@ function resetGame() {
 
 // build the grid
 function initGrid(num) {
-  // get glyphs
   var glyphs = getGlyphs(num * num);
   var imageList = getImageList(glyphs);
 
+  var $game = $("#game").empty();
+
   for (var i = 0; i < num; i++) {
-    // create row
-    var row = $("<div/>")
-              .attr("class", "mem_row")
-              .height(Math.floor($("#mem_grid").css("height") / num))
-              .appendTo("#mem_grid");
+    var $row = $("<div>")
+      .addClass("row")
+      .appendTo($game);
 
     for (var j = 0; j < num; j++) {
-      var cellSize = Math.floor(Number(row.width()) / num);
       var glyph = glyphs.pop();
 
       // NOTE: We create two divs for each card because CSS transitions
       //       and jQuery animations weren't working well together.
 
+      var $col = $("<div>")
+        .addClass("col")
+        .appendTo($row);
+
       // colorfully styled backside of card
-      var cardBack = $("<div/>")
-                       .attr("class", "mem_cellback")
-                       .outerWidth(cellSize - 10)
-                       .outerHeight(cellSize - 10)
-                       .hide()
-                       .appendTo(row)
-                       .fadeIn(Math.random() * 500 + 500);
+      var $cardBack = $("<div>")
+        .addClass("game-cell")
+        .on("click", cellClickHandler)
+        .appendTo($col)
+        .fadeIn(Math.random() * 500 + 500);
 
       // animated frontside of card
-      var cardFace = $("<div/>")
-                          .attr("class", "mem_cellface")
-                          .css("backgroundImage", "url(" + imageList[glyph] + ")")
-                          .outerWidth(cellSize - 10)
-                          .outerHeight(cellSize - 10)
-                          .hide()
-                          .appendTo(cardBack);
+      var $cardFace = $("<div>")
+        .addClass("cellface invisible")
+        .css("backgroundImage", "url(" + imageList[glyph] + ")")
+        .appendTo($cardBack);
 
-      // add card face content
-      $("<span/>").text(glyph)
-                  .appendTo(cardFace);
+      $("<span>")
+        .addClass("invisible")
+        .text(glyph)
+        .appendTo($cardFace);
     }
   }
 }
@@ -168,7 +150,7 @@ function getImageList(glyphs) {
   var images = {};
 
   for (var i = 0; i < glyphs.length; i++) {
-    if ( !images[glyphs[i]]) {
+    if (!images[glyphs[i]]) {
       images[glyphs[i]] = hardCodedList.pop();
     }
   }
@@ -178,52 +160,42 @@ function getImageList(glyphs) {
 
 // implements the game logic
 function cellClickHandler(event) {
-  //TODO try different animations
-
-  var cellface = $(this).children(".mem_cellface").first().get();
+  var $cellface = $(this).children(".cellface");
 
   // set as selected if it's the first to be flipped
-  if (!firstSelectedCard) {
-    $(cellface).fadeIn();
+  if (!$firstSelectedCard) {
+    $cellface.toggleClass("visible invisible");
 
-    firstSelectedCard = cellface;
-  } else if ( !$(cellface).is(firstSelectedCard)) {
-    $(cellface).fadeIn(fadeOutHandler($(cellface).add(firstSelectedCard)));
+    $firstSelectedCard = $cellface;
+  } else if (!$cellface.is($firstSelectedCard)) {
+    $cellface.toggleClass("visible invisible");
 
-    if ($(cellface).text() === $(firstSelectedCard).text()) {
+    if ($cellface.text() === $firstSelectedCard.text()) {
       matchCount++;
 
-      var $toHide = $(cellface).parent();
-      $toHide = $toHide.add($(firstSelectedCard).parent());
-
-      $(cellface).queue(hideHandler($toHide));
+      var $first = $firstSelectedCard;
+      setTimeout(function () {
+        $first.parent().addClass("invisible");
+        $cellface.parent().addClass("invisible");
+      }, 500);
     }
 
+    // we have to always set .cellface visibility as it overrides parent visibility
+    var $first = $firstSelectedCard;
+    setTimeout(function () {
+      $first.toggleClass("visible invisible");
+      $cellface.toggleClass("visible invisible");
+    }, 500);
+
     turnCount++;
-    firstSelectedCard = null;
+    $firstSelectedCard = null;
 
     updateGameStatus();
   }
 }
 
-// (closure) helper to asynchronously fade out the elements in
-// the given jQuery object
-function fadeOutHandler(jObject) {
-  return function() {
-    jObject.fadeOut();
-  }
-}
-
-// (closure) helper to asynchronously hide the elements in
-// the given jQuery object
-function hideHandler(jObject) {
-  return function() {
-    jObject.css("visibility", "hidden");
-  }
-}
-
 function updateGameStatus() {
-  $("#mem_turncount").text("Turns: " + turnCount);
+  $("#score").text(turnCount);
 
   if (cardCount === matchCount * 2) {
     $("#mem_state").text("Game over!");

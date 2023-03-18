@@ -1,78 +1,51 @@
-body {
-  margin: 0;
-  padding: 0;
-}
-
-h1 {
-  text-align: center;
-  padding: 0;
-  margin: 0;
-}
-
-#mem_config {
-  margin: 0;
-  width: 30%;
-  min-height: 400px;
-  min-width: 100px;
-  max-width: 300px;
-  float: left;
-  padding: 10px 0;
-  text-align: right;
-}
-
-#mem_config p {
-  min-height: 1em;
-}
-
-#mem_game {
-  width: 70%;
-  float: left;
-  padding: 10px 0;
-}
-
-#mem_grid {
-  width: 400px;
-  margin: 0 auto;
-  padding: 0;
-}
-
-.mem_row {
-  height: 100px;
-  max-height: 100px;
+footer {
+  font-size: 0.8em;
+  position: absolute;
+  bottom: 0;
   width: 100%;
-  margin: 0;
-  padding: 0;
+  height: 60px;
+  line-height: 60px;
 }
 
-.mem_row div {
-  height: 90px;
-  width: 90px;
-  max-height: 90px;
-  max-width: 90px;
-  margin: 5px;
+.github-logo {
+  background-image: url('../images/github-mark/github-mark.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+  height: 1.5em;
+  width: 1.5em;
+}
+
+#score {
+  font-size: 3em;
+}
+
+.game-cell {
+  margin: 0.2em;
   padding: 0;
-  float: left;
   border-radius: 10px;
   box-shadow: 3px 3px 2px 2px rgba(0, 0, 0, 0.8);
-
+  font-size: 5em;
+  font-weight: bold;
   /* gradient from https://uigradients.com */
   background: #16A085;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to bottom, #F4D03F, #16A085);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to bottom, #F4D03F, #16A085); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
-.mem_row div.mem_cellface {
+.cellface {
   margin: 0;
+  padding: 0;
+  border-radius: 10px;
   box-shadow: none;
   background-origin: content-box;
   background-position: center;
   background-repeat: no-repeat;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
   background-size: cover;
 }
 
-.mem_cellface span {
-  visibility: hidden;
+.visible,
+.invisible {
+  transition: all 0.5s ease-out;;
 }
