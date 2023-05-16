@@ -35,7 +35,7 @@ var cardCount;
 var matchCount;
 
 $(function () {
-  $("#mem_size,#reset").on("change", function() {
+  $("#mem_size,#reset").on("change", function () {
     resetGame();
 
     $(this).blur();
