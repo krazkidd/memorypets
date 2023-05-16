@@ -15,14 +15,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Memory Pets.  If not, see <http://www.gnu.org/licenses/>.
 
-
+/** @type {jQuery} */
 var $firstSelectedCard;
 
-// number of attempted pairings
+/**
+ * Number of attempted pairings.
+ * @type {number}
+ */
 var turnCount;
-// number of cards
+/**
+ * Number of cards.
+ * @type {number}
+ */
 var cardCount;
-// number of matches (at end of game, matchCount * 2 === cardCount)
+/**
+ * Number of matches (at end of game, matchCount * 2 === cardCount).
+ * @type {number}
+ */
 var matchCount;
 
 $(function () {
@@ -35,6 +44,9 @@ $(function () {
   resetGame();
 });
 
+/**
+ * TODO
+ */
 function resetGame() {
   var selectedSize = Number($("#mem_size").val());
 
@@ -52,7 +64,10 @@ function resetGame() {
   updateGameStatus();
 }
 
-// build the grid
+/**
+ * Build the grid.
+ * @param {number} num - TODO
+ */
 function initGrid(num) {
   var glyphs = getGlyphs(num * num);
   var imageList = getImageList(glyphs);
@@ -95,8 +110,14 @@ function initGrid(num) {
   }
 }
 
-// return a randomized array of glyphs to use on the card faces.
-// num must be an even number
+/**
+ * Return a randomized array of glyphs to use on the card faces.
+ * @param {number} num
+ *        TODO
+ *        Must be an even number.
+ * @return {string[]}
+ *         TODO
+ */
 function getGlyphs(num) {
   if (num % 2 != 0) {
     throw "getGlyphs(): num parameter must be an even number.";
@@ -140,6 +161,13 @@ function getGlyphs(num) {
   return glyphs;
 }
 
+/**
+ * TODO
+ * @param {string[]} glyphs
+ *        TODO
+ * @return {string[]}
+ *         TODO
+ */
 function getImageList(glyphs) {
   //TODO use AJAX to get list of images from server
   var hardCodedList = [];
@@ -158,7 +186,11 @@ function getImageList(glyphs) {
   return images;
 }
 
-// implements the game logic
+/**
+ * Implements the game logic.
+ * @param {Event} event
+ *        TODO
+ */
 function cellClickHandler(event) {
   var $cellface = $(this).children(".cellface");
 
@@ -194,6 +226,9 @@ function cellClickHandler(event) {
   }
 }
 
+/**
+ * TODO
+ */
 function updateGameStatus() {
   $("#score").text(turnCount);
 
