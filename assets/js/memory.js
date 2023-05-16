@@ -16,23 +16,23 @@
 // along with Memory Pets.  If not, see <http://www.gnu.org/licenses/>.
 
 /** @type {jQuery} */
-var $firstSelectedCard;
+let $firstSelectedCard;
 
 /**
  * Number of attempted pairings.
  * @type {number}
  */
-var turnCount;
+let turnCount;
 /**
  * Number of cards.
  * @type {number}
  */
-var cardCount;
+let cardCount;
 /**
  * Number of matches (at end of game, matchCount * 2 === cardCount).
  * @type {number}
  */
-var matchCount;
+let matchCount;
 
 $(function () {
   $("#mem_size,#reset").on("change", function () {
@@ -48,7 +48,7 @@ $(function () {
  * TODO
  */
 function resetGame() {
-  var selectedSize = Number($("#mem_size").val());
+  const selectedSize = Number($("#mem_size").val());
 
   $firstSelectedCard = null;
 
@@ -69,35 +69,33 @@ function resetGame() {
  * @param {number} num - TODO
  */
 function initGrid(num) {
-  var glyphs = getGlyphs(num * num);
-  var imageList = getImageList(glyphs);
+  const glyphs = getGlyphs(num * num);
+  const imageList = getImageList(glyphs);
 
-  var $game = $("#game").empty();
+  const $game = $("#game").empty();
 
-  for (var i = 0; i < num; i++) {
-    var $row = $("<div>")
+  for (let i = 0; i < num; i++) {
+    const $row = $("<div>")
       .addClass("row")
       .appendTo($game);
 
-    for (var j = 0; j < num; j++) {
-      var glyph = glyphs.pop();
+    for (let j = 0; j < num; j++) {
+      const glyph = glyphs.pop();
 
       // NOTE: We create two divs for each card because CSS transitions
       //       and jQuery animations weren't working well together.
 
-      var $col = $("<div>")
-        .addClass("col")
-        .appendTo($row);
+      const $col = $("<div>").addClass("col").appendTo($row);
 
       // colorfully styled backside of card
-      var $cardBack = $("<div>")
+      const $cardBack = $("<div>")
         .addClass("game-cell")
         .on("click", cellClickHandler)
         .appendTo($col)
         .fadeIn(Math.random() * 500 + 500);
 
       // animated frontside of card
-      var $cardFace = $("<div>")
+      const $cardFace = $("<div>")
         .addClass("cellface invisible")
         .css("backgroundImage", "url(" + imageList[glyph] + ")")
         .appendTo($cardBack);
@@ -126,12 +124,12 @@ function getGlyphs(num) {
     throw "getGlyphs(): Currently, this function cannot generate more than 26 glyphs. (" + num + " requested.)";
   }
 
-  var glyphs = new Array(num);
+  const glyphs = new Array(num);
 
-  for (var i = 0; i < num / 2; i++) {
+  for (let i = 0; i < num / 2; i++) {
     // select two random indices or the first unocuppied ones
     // following those
-    var index1 = Math.floor(Math.random() * num);
+    let index1 = Math.floor(Math.random() * num);
     while (glyphs[index1]) {
       index1++;
       if (index1 === glyphs.length) {
@@ -139,7 +137,7 @@ function getGlyphs(num) {
       }
     }
 
-    var index2 = Math.floor(Math.random() * num);
+    let index2 = Math.floor(Math.random() * num);
     while (glyphs[index2] || index2 === index1) {
       index2++;
       if (index2 === glyphs.length) {
@@ -148,7 +146,7 @@ function getGlyphs(num) {
     }
 
     // generate random glyph not already used
-    var r;
+    let r;
     do {
       //TODO use unicode symbol range
       r = String.fromCharCode(Math.floor(Math.random() * 26 + 65));
@@ -171,14 +169,14 @@ function getGlyphs(num) {
  */
 function getImageList(glyphs) {
   //TODO use AJAX to get list of images from server
-  var hardCodedList = [];
-  for (var i = 0; i < glyphs.length / 2; i++) {
+  const hardCodedList = [];
+  for (let i = 0; i < glyphs.length / 2; i++) {
     hardCodedList.push("assets/images/game/" + i + ".jpg");
   }
 
-  var images = {};
+  const images = {};
 
-  for (var i = 0; i < glyphs.length; i++) {
+  for (let i = 0; i < glyphs.length; i++) {
     if (!images[glyphs[i]]) {
       images[glyphs[i]] = hardCodedList.pop();
     }
@@ -193,7 +191,7 @@ function getImageList(glyphs) {
  *        TODO
  */
 function cellClickHandler(event) {
-  var $cellface = $(this).children(".cellface");
+  const $cellface = $(this).children(".cellface");
 
   // set as selected if it's the first to be flipped
   if (!$firstSelectedCard) {
@@ -206,7 +204,7 @@ function cellClickHandler(event) {
     if ($cellface.text() === $firstSelectedCard.text()) {
       matchCount++;
 
-      var $first = $firstSelectedCard;
+      const $first = $firstSelectedCard;
       setTimeout(function () {
         $first.parent().addClass("invisible");
         $cellface.parent().addClass("invisible");
@@ -214,7 +212,7 @@ function cellClickHandler(event) {
     }
 
     // we have to always set .cellface visibility as it overrides parent visibility
-    var $first = $firstSelectedCard;
+    const $first = $firstSelectedCard;
     setTimeout(function () {
       $first.toggleClass("visible invisible");
       $cellface.toggleClass("visible invisible");
