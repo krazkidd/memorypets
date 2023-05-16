@@ -117,6 +117,7 @@ function initGrid(num) {
  *        Must be an even number.
  * @return {string[]}
  *         TODO
+ * @throws TODO
  */
 function getGlyphs(num) {
   if (num % 2 != 0) {
