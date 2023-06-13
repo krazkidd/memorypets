@@ -81,9 +81,7 @@ function initGrid(num) {
   const $game = $("#game").empty();
 
   for (let i = 0; i < num; i++) {
-    const $row = $("<div>")
-      .addClass("row")
-      .appendTo($game);
+    const $row = $("<div>").addClass("row").appendTo($game);
 
     for (let j = 0; j < num; j++) {
       const glyph = glyphs.pop();
@@ -106,10 +104,7 @@ function initGrid(num) {
         .css("backgroundImage", "url(" + imageList[glyph] + ")")
         .appendTo($cardBack);
 
-      $("<span>")
-        .addClass("invisible")
-        .text(glyph)
-        .appendTo($cardFace);
+      $("<span>").addClass("invisible").text(glyph).appendTo($cardFace);
     }
   }
 }
@@ -127,7 +122,11 @@ function getGlyphs(num) {
   if (num % 2 != 0) {
     throw "getGlyphs(): num parameter must be an even number.";
   } else if (num > 26) {
-    throw "getGlyphs(): Currently, this function cannot generate more than 26 glyphs. (" + num + " requested.)";
+    throw (
+      "getGlyphs(): Currently, this function cannot generate more than 26 glyphs. (" +
+      num +
+      " requested.)"
+    );
   }
 
   const glyphs = new Array(num);
